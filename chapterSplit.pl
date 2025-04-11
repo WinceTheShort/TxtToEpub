@@ -4,6 +4,7 @@ use strict;
 
 my $outFolder = 'rawChapters'; # output folder
 mkdir($outFolder) unless -d $outFolder; # create the output folder if it doesn't exist
+
 opendir(DIR, $outFolder) or die "Cannot open directory: $!";
 my @files = readdir(DIR); # get all files in the directory
 closedir(DIR);
@@ -21,7 +22,7 @@ while(<>) {
     if (/^\s*$/) { # remove empty lines
         next;
     }
-    if (/\d\. fejezet/) {
+        if (/\d\. fejezet\s/ || /Epilógus\n/) {
         close OUT; # close the previous file
         $outfile = $_; # set the output filename to the chapter title
         $outfile =~ s/^\s*//; # remove leading whitespace

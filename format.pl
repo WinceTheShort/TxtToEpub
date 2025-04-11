@@ -7,6 +7,14 @@ mkdir($inDir) unless -d $inDir; # create the input folder if it doesn't exist
 my $outDir = 'formatted'; # output folder
 mkdir($outDir) unless -d $outDir; # create the output folder if it doesn't exist
 
+opendir(DIR, $outDir) or die "Cannot open directory: $!";
+my @ofiles = readdir(DIR); # get all files in the directory
+closedir(DIR);
+foreach my $file(@ofiles)
+{
+    unlink($outDir . "/" . $file)
+}
+
 opendir(my $iDir, $inDir) or die "Cannot open directory: $!";
 my @files = grep { /\.txt$/ && -f "$inDir/$_" } readdir($iDir); # get all .txt files
 closedir($iDir);
@@ -22,7 +30,7 @@ foreach(@files)
     open(OUT, '>', $outfile) or die $!;
 
     while(<IN>) {
-        if (/\d\. fejezet/) {
+        if (/\d\. fejezet\s/ || /Epilógus\n/ || /Bevezetés\n/) {
             $_ =~ s/^\s*//; # remove leading whitespace
             $_ =~ s/\s*$//; # remove trailing whitespace
             $_ =~ s/\R\z//; # remove trailing newline

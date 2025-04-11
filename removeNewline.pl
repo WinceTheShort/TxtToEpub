@@ -7,6 +7,14 @@ mkdir($inDir) unless -d $inDir; # create the input folder if it doesn't exist
 my $outDir = 'noNewline'; # output folder
 mkdir($outDir) unless -d $outDir; # create the output folder if it doesn't exist
 
+opendir(DIR, $outDir) or die "Cannot open directory: $!";
+my @ofiles = readdir(DIR); # get all files in the directory
+closedir(DIR);
+foreach my $file(@ofiles)
+{
+    unlink($outDir . "/" . $file)
+}
+
 my $paragraph = ""; # variable to hold the paragraph
 sub conParagraph {
     my $line = shift; # get the line passed to the subroutine
@@ -28,7 +36,7 @@ foreach(@files)
     open(OUT, '>', $outfile) or die $!;
 
     while(<IN>) {
-        if (/\d\. fejezet/) { # print chapter titles
+        if (/\d\. fejezet\s/ || /Epilógus\n/ || /Bevezetés\n/) { # print chapter titles
             print OUT $_;
             next;
         }
